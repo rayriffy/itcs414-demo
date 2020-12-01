@@ -11,7 +11,7 @@ const Page: NextPage = props => {
   const [result, setResult] = useState<any>(undefined)
 
   const [errors, setErrors] = useState<string[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const onSearch = (page: number) => async () => {
     try {
@@ -95,7 +95,7 @@ const Page: NextPage = props => {
         </button>
       </div>
       {loading ? (
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-4">
           <div className="w-8 h-8 spinner border-4"></div>
         </div>
       ) : (
