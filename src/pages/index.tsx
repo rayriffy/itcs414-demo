@@ -11,9 +11,7 @@ const Page: NextPage = props => {
   const [result, setResult] = useState<any>(undefined)
 
   const [errors, setErrors] = useState<string[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
-
-  const [page, setPage] = useState<number>(0)
+  const [loading, setLoading] = useState<boolean>(true)
 
   const onSearch = (page: number) => async () => {
     try {
@@ -51,17 +49,14 @@ const Page: NextPage = props => {
           },
         }
 
-        const res = await fetch(
-          `http://server.rayriffy.com:9200/game/_search`,
-          {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-          }
-        ).then(o => o.json())
+        const res = await fetch(`/api/search`, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        }).then(o => o.json())
 
         setResult(res)
       }
@@ -73,8 +68,6 @@ const Page: NextPage = props => {
       setLoading(false)
     }
   }
-
-  console.log(result)
 
   return (
     <div className="max-w-4xl mx-auto py-8 sm:px-6 lg:px-8 space-y-4">
@@ -101,51 +94,54 @@ const Page: NextPage = props => {
           <Search className="w-5 h-5" />
         </button>
       </div>
-      {loading && (
-        <div className="mx-auto">
-          <div className="w-16 h-16 spinner border-4"></div>
+      {loading ? (
+        <div className="flex justify-center">
+          <div className="w-8 h-8 spinner border-4"></div>
         </div>
-      )}
-      {errors.length > 0 && (
-        <div className="bg-red-500 p-4">
-          {errors.map((error, i) => (
-            <p key={`error-${i}`}>{error}</p>
-          ))}
-        </div>
-      )}
-      {result === undefined ? (
-        <div className="text-center text-gray-600 font-bold">No data</div>
       ) : (
-        <div className="pt-4 grid grid-cols-2 gap-6">
-          {result.hits.hits.map(item => (
-            <div className="flex items-center">
-              <div
-                className="bg-white rounded-md p-4 shadow w-full"
-                key={`item-${item._id}`}
-              >
-                <h1 className="text-sm text-gray-900 uppercase font-bold">
-                  {item._source.name}
-                </h1>
-                <div className="py-2 flex flex-wrap">
-                  {item._source.tags.map(tag => (
-                    <span
-                      className="text-white bg-blue-500 px-2 py-1 m-1 text-xs rounded-md"
-                      key={`tag-${item._id}-${tag}`}
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <p className="py-2 text-gray-600 text-xs">
-                  {item._source.shortDescription}
-                </p>
-                <h2 className="text-xl font-extrabold">
-                  ${item._source.price}
-                </h2>
-              </div>
+        <React.Fragment>
+          {errors.length > 0 && (
+            <div className="bg-red-500 p-4">
+              {errors.map((error, i) => (
+                <p key={`error-${i}`}>{error}</p>
+              ))}
             </div>
-          ))}
-        </div>
+          )}
+          {result === undefined ? (
+            <div className="text-center text-gray-600 font-bold">No data</div>
+          ) : (
+            <div className="pt-4 grid grid-cols-2 gap-6">
+              {result.hits.hits.map(item => (
+                <div className="flex items-center">
+                  <div
+                    className="bg-white rounded-md p-4 shadow w-full"
+                    key={`item-${item._id}`}
+                  >
+                    <h1 className="text-sm text-gray-900 uppercase font-bold">
+                      {item._source.name}
+                    </h1>
+                    <div className="py-2 flex flex-wrap">
+                      {item._source.tags.map(tag => (
+                        <span
+                          className="text-white bg-blue-500 px-2 py-1 m-1 text-xs rounded-md"
+                          key={`tag-${item._id}-${tag}`}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="py-2 text-gray-600 text-xs">
+                      {item._source.shortDescription}
+                    </p>
+                    <h2 className="text-xl font-extrabold">
+                      ${item._source.price}
+                    </h2>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </React.Fragment>
       )}
     </div>
   )
