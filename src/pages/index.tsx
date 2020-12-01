@@ -1,10 +1,7 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 
 import { NextPage } from 'next'
 
-import querystring from 'querystring'
-
-import { ArrowRight } from '../core/components/icons/arrowRight'
 import { Search } from '../core/components/icons/search'
 
 const Page: NextPage = props => {
